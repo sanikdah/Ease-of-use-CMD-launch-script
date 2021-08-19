@@ -98,6 +98,7 @@ if '%choice%'=='3' goto :DISMandSFC
 if '%choice%'=='4' goto :exit
 ECHO "%choice%" is not a valid option, please try again.
 ECHO.
+goto :Choice
 echo.>EndOfChoiceTriggered.txt
 
 
@@ -107,10 +108,10 @@ goto :leave
 echo.>EndOfGoToRegualarCMDTriggered.txt
 
 :PingGoogle
-@echo off
+@echo on
 title Pinging Google......
 ping google.com -n 1 >PingStats.txt
-if !errorlevel!==0 set %InternetState%=up else set %InternetState%=down
+if !errorlevel!==0 set InternetState=up else set InternetState=down
 echo. Internet is %InternetState%!
 goto :MainMenu
 echo.>EndOfPingGoogleTriggered.txt
