@@ -2,18 +2,8 @@
 @echo off
 cls
 color 0a
+cd %appdata%
 :: Debug stuff, making a place for logs
-if exist "Debug" (
-	cd "Debug".
-	goto DebugExists
-	echo This should never occurr, please contact the developer and give the error code "1"
-) else (
-	mkdir "Debug".
-	cd "Debug".
-	goto DebugExists
-)
-
-:DebugExists
 if exist "Sanikdah Software" (
 	cd "Sanikdah Software".
 	goto SSFolderExists
@@ -34,12 +24,13 @@ if exist "Ease of Use Command Prompt Auto Run Script" (
 )
 :EoUCPARS-FolderExists
 echo.>Launched.txt
+goto :MainMenu
 
 :: Launches if the previous code detects that this is your first time launching the program
 :FirstTimeUser
 title Do you want a tutorial?
 echo.Hey!  You seem like you ran this program for the first time!  Would you like a tutorial on how to navigate?
-set /p wantsTutorial= Do you want a tutorial?=
+set /p wantsTutorial= 
 if not '%wantsTutorial%'=='' set choice=%wantsTutorial:~0,1%
 if '%wantsTutorial%'=='y' goto :wantsTutorial
 if '%wantsTutorial%'=='Y' goto :wantsTutorial
@@ -55,7 +46,8 @@ ECHO.
 
 :wantsTutorial
 echo.Placeholder tutorial.
-set /p wantsTutorial= Do you want to see the tutorial again?
+echo.Do you want to see the tutorial again?
+set /p wantsTutorial= 
 if not '%wantsTutorial%'=='' set choice=%wantsTutorial:~0,1%
 if '%wantsTutorial%'=='y' goto :wantsTutorial
 if '%wantsTutorial%'=='Y' goto :wantsTutorial
@@ -70,7 +62,8 @@ goto :FirstTimeUser
 
 
 :noTutorial
-set /p isSureofNoTutorial= Are you sure?=
+echo.Are you sure?
+set /p isSureofNoTutorial= 
 if not '%isSureofNoTutorial%'=='' set choice=%isSureofNoTutorial:~0,1%
 if '%isSureofNoTutorial%'=='y' goto :isSureofNoTutorial
 if '%isSureofNoTutorial%'=='Y' goto :isSureofNoTutorial
@@ -104,16 +97,20 @@ echo.>MainMenuTriggered.txt
 :Choice
 set choice=
 echo.
-echo 1: Go to the regular command line and run your own commands!
-echo 2: Test your internet connection by pinging Google!
-echo 3: Repair your system by running DISM and System File Checker!
+echo. 1: Go to the regular command line and run your own commands!
+echo. 2: Test your internet connection by pinging Google!
+echo. 3: Repair your system by running DISM and System File Checker!
+echo. 9: Access Help
 set /p choice= Your choice?=
 if not '%choice%'=='' set choice=%choice:~0,1%
 if '%choice%'=='1' goto :GoToRegularCMD
 if '%choice%'=='2' goto :PingGoogle
 if '%choice%'=='3' goto :DISMandSFC
-if '%choice%'=='4' goto :exit
-if '%choice%'=='9' goto :debug
+if '%choice%'=='exit' goto :exit
+if '%choice%'=='leave' goto :exit
+if '%choice%'=='die' goto :exit
+if '%choice%'=='debug' goto :debug
+if '%choice%'=='9' goto :Help
 ECHO "%choice%" is not a valid option, please try again.
 ECHO.
 goto :Choice
@@ -146,11 +143,19 @@ echo.====WARNING========WARNING=======WARNING=====
 echo.====WARNING========WARNING=======WARNING=====
 echo.THESE ARE DEBUG OPTIONS AND **CAN** BREAK THE PROGRAM!!
 echo.ARE YOU **101% POSITIVE** THAT YOU NEED THESE?
-set /p isSureOfDebugOptions=Say "I understand that the creator takes no responsibilty in what can happen if I, the user, breaks part of the program, by using explictly stated as options for DEBUGGING purposes."
-if '%isSureOfDebugOptions%'=='I understand that the creator takes no responsibilty in what can happen if I, the user, breaks part of the program, by using explictly stated as options for DEBUGGING purposes.' 
-( echo.>WellThisWorks.txt
-goto :realDebug )
-else (goto :MainMenu)
+echo.
+echo.Say "I understand", to prove the you understand this aggreement: The creator takes no responsibilty in what can happen if I, the user, breaks part of the program, by using explictly stated as options for DEBUGGING purposes.
+set /p isSureOfDebugOptions=
+if '%isSureOfDebugOptions%'=='I understand' goto :realDebug
+if '%isSureOfDebugOptions%'=='i understand' goto :useBetterGrammarDebug
+goto :noDebug
+
+
+:noDebug
+echo No debug 4 u
+:: Causes about a 0.25 second pause
+ping techflash.ga -n 1 > nul
+goto :noDebug
 
 :: Debug options don't exist as it would be accessible even if you didn't aggree to the terms.
 
