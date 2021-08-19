@@ -1,5 +1,6 @@
 :: Sets the color, disables command feedback, and clears the screen of the version and whatnot text.
 @echo off
+cls
 color 0a
 :: Debug stuff, making a place for logs
 if exist "Debug" (
@@ -32,12 +33,12 @@ if exist "Ease of Use Command Prompt Auto Run Script" (
 	goto :FirstTimeUser
 )
 :EoUCPARS-FolderExists
-echo.Launched.txt
+echo.>Launched.txt
 
 :: Launches if the previous code detects that this is your first time launching the program
 :FirstTimeUser
 title Do you want a tutorial?
-echo. Hey!  You seem like you ran this program for the first time!  Would you like a tutorial on how to navigate?
+echo.Hey!  You seem like you ran this program for the first time!  Would you like a tutorial on how to navigate?
 set /p wantsTutorial= Do you want a tutorial?=
 if not '%wantsTutorial%'=='' set choice=%wantsTutorial:~0,1%
 if '%wantsTutorial%'=='y' goto :wantsTutorial
@@ -49,10 +50,24 @@ if '%wantsTutorial%'=='N' goto :noTutorial
 if '%wantsTutorial%'=='no' goto :noTutorial
 if '%wantsTutorial%'=='No' goto :noTutorial
 ECHO. "%wantsTutorial%" is not a valid option, please try again.
+goto :FirstTimeUser
 ECHO.
 
 :wantsTutorial
-echo. Placeholder tutorial
+echo.Placeholder tutorial.
+set /p wantsTutorial= Do you want to see the tutorial again?
+if not '%wantsTutorial%'=='' set choice=%wantsTutorial:~0,1%
+if '%wantsTutorial%'=='y' goto :wantsTutorial
+if '%wantsTutorial%'=='Y' goto :wantsTutorial
+if '%wantsTutorial%'=='Yes' goto :wantsTutorial
+if '%wantsTutorial%'=='yes' goto :wantsTutorial
+if '%wantsTutorial%'=='n' goto :noTutorial
+if '%wantsTutorial%'=='N' goto :noTutorial
+if '%wantsTutorial%'=='no' goto :noTutorial
+if '%wantsTutorial%'=='No' goto :noTutorial
+ECHO. "%wantsTutorial%" is not a valid option, please try again.
+goto :FirstTimeUser
+
 
 :noTutorial
 set /p isSureofNoTutorial= Are you sure?=
@@ -66,9 +81,11 @@ if '%isSureofNoTutorial%'=='N' goto :FirstTimeUser
 if '%isSureofNoTutorial%'=='no' goto :FirstTimeUser
 if '%isSureofNoTutorial%'=='No' goto :FirstTimeUser
 ECHO. "%isSureofNoTutorial%" is not a valid option, please try again.
+goto :noTutorial
 ECHO.
 
 :isSureofNoTutorial
+cls
 echo Alright, just go to Help (5) and then Tutorial (2) to view it if you ever want to!
 goto :MainMenu
 
@@ -96,6 +113,7 @@ if '%choice%'=='1' goto :GoToRegularCMD
 if '%choice%'=='2' goto :PingGoogle
 if '%choice%'=='3' goto :DISMandSFC
 if '%choice%'=='4' goto :exit
+if '%choice%'=='9' goto :debug
 ECHO "%choice%" is not a valid option, please try again.
 ECHO.
 goto :Choice
@@ -108,13 +126,33 @@ goto :leave
 echo.>EndOfGoToRegualarCMDTriggered.txt
 
 :PingGoogle
-@echo on
+@echo off
 title Pinging Google......
 ping google.com -n 1 >PingStats.txt
-if !errorlevel!==0 set InternetState=up else set InternetState=down
-echo. Internet is %InternetState%!
+if %errorlevel%==0 (set InternetState=up) else (set InternetState=down)
+cls
+echo.
+echo.Internet is %InternetState%!
 goto :MainMenu
 echo.>EndOfPingGoogleTriggered.txt
+
+
+::Debug options, to be accessible by those who know exactly what they are doing
+:debug
+@echo off
+cls
+echo.====WARNING========WARNING=======WARNING=====
+echo.====WARNING========WARNING=======WARNING=====
+echo.====WARNING========WARNING=======WARNING=====
+echo.THESE ARE DEBUG OPTIONS AND **CAN** BREAK THE PROGRAM!!
+echo.ARE YOU **101% POSITIVE** THAT YOU NEED THESE?
+set /p isSureOfDebugOptions=Say "I understand that the creator takes no responsibilty in what can happen if I, the user, breaks part of the program, by using explictly stated as options for DEBUGGING purposes."
+if '%isSureOfDebugOptions%'=='I understand that the creator takes no responsibilty in what can happen if I, the user, breaks part of the program, by using explictly stated as options for DEBUGGING purposes.' 
+( echo.>WellThisWorks.txt
+goto :realDebug )
+else (goto :MainMenu)
+
+:: Debug options don't exist as it would be accessible even if you didn't aggree to the terms.
 
 :: Simplest one of them all, exits the shell
 :exit
