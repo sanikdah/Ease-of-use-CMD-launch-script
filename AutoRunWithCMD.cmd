@@ -2,31 +2,44 @@
 :Init
 @echo off
 cls
+if copy AutoRunWithCMD.cmd %temp%\AutoRunWithCMD.cmd (
+	rem Do nothing :)
+) else (
+	echo.Something wen't wrong, please give the error code "4".
+)
 cd %appdata%
 :: Debug stuff, making a place for logs
 if exist "Sanikdah Software" (
 	cd "Sanikdah Software".
-	goto SSFolderExists
+	goto :SSFolderExists
 ) else (
 	mkdir "Sanikdah Software".
 	cd "Sanikdah Software".
-	goto SSFolderExists
+	goto :SSFolderExists
 )
 	
 :SSFolderExists
 if exist "Ease of Use Command Prompt Auto Run Script" (
 	cd "Ease of Use Command Prompt Auto Run Script"
-	goto EoUCPARS-FolderExists
+	goto :EoUCPARS-FolderExists
 ) else (
 	mkdir "Ease of Use Command Prompt Auto Run Script"
 	cd "Ease of Use Command Prompt Auto Run Script"
 	goto :FirstTimeUser
 )
 :EoUCPARS-FolderExists
+@echo off
+if move %temp%\AutoRunWithCMD.cmd "%appdata%\Sanikdah Software\Ease of Use Command Prompt Auto Run Script\AutoRunWithCMD.cmd" 2> nul (
+	rem Do nothing :)
+) else (
+	echo. Something went wrong, please give the developer error code "3".
+)
+
 echo.>Launched.txt
 goto :ReadBackColor
 
 :ReadBackColor
+@echo off
 set /p color= < Color.txt
 ping techflash.ga -n 1 > nul
 color %color%
@@ -34,12 +47,52 @@ goto :MainMenu
 
 
 :: Launches if the previous code detects that this is your first time launching the program
-@echo off
 :FirstTimeUser
+@echo off
+move %temp%\AutoRunWithCMD.cmd "%appdata%\Sanikdah Software\Ease of Use Command Prompt Auto Run Script\AutoRunWithCMD.cmd" > nul
+cls
+echo.Hey!  Would you like this program to run whenever you launch the command prompt?
+echo.(Please note that this is dangerous and will break any other batch script.)
+echo.You can ALSO try a safer method, where calling a command in CMD will launch the script.
+echo.Which would you like to do?
+echo.N/n: Nothing
+echo.D/d: Dangerous but more convinient method.
+echo.S/s: Safer method.
+set /p doesAutoRun=
+if not '%doesAutoRun%'=='' set doesAutoRun=%doesAutoRun:~0,1%
+if '%doesAutoRun%'=='D' goto :setAutoRun
+if '%doesAutoRun%'=='d' goto :setAutoRun
+if '%doesAutoRun%'=='n' goto :FirstTimeUser2
+if '%doesAutoRun%'=='N' goto :FirstTimeUser2
+if '%doesAutoRun%'=='S' goto :saferSetAutoRun
+if '%doesAutoRun%'=='s' goto :saferSetAutoRun
+echo "%doesAutoRun%" is not a valid option, please try again.
+goto :FirstTimeUser
+
+:: Sets the autoRun value
+:setAutoRun
+echo. Are you CERTAIN that you want to do this?  It is difficult to undo!
+set /p isSureOfDangerousAutoRun=
+if not '%isSureOfDangerousAutoRun%'=='' set isSureOfDangerousAutoRun=%isSureOfDangerousAutoRun:~0,1%
+if '%isSureOfDangerousAutoRun%'=='Y' goto :setAutoRun2
+if '%isSureOfDangerousAutoRun%'=='y' goto :setAutoRun2
+if '%isSureOfDangerousAutoRun%'=='n' goto :FirstTimeUser
+if '%isSureOfDangerousAutoRun%'=='N' goto :FirstTimeUser
+echo "%isSureOfDangerousAutoRun%" is not a valid option, please try again.
+:setAutoRun2
+echo.This will NOT work if you have renamed the file.
+reg add "HKCU\Software\Microsoft\Command Processor" /v AutoRun ^
+  /t REG_EXPAND_SZ /d "%appdata%\Sanikdah Software\AutoRunWithCMD.cmd" /f
+pause
+
+
+
+@echo off
+:FirstTimeUser2
 title Do you want a tutorial?
 echo.Hey!  You seem like you ran this program for the first time!  Would you like a tutorial on how to use the program?
 set /p wantsTutorial= 
-if not '%wantsTutorial%'=='' set choice=%wantsTutorial:~0,1%
+if not '%wantsTutorial%'=='' set wantsTutorial=%wantsTutorial:~0,1%
 if '%wantsTutorial%'=='y' goto :wantsTutorial
 if '%wantsTutorial%'=='Y' goto :wantsTutorial
 if '%wantsTutorial%'=='n' goto :noTutorial
@@ -52,7 +105,7 @@ ECHO.
 echo.Placeholder tutorial.
 echo.Do you want to see the tutorial again?
 set /p wantsTutorial= 
-if not '%wantsTutorial%'=='' set choice=%wantsTutorial:~0,1%
+if not '%wantsTutorial%'=='' set wantsTutorial=%wantsTutorial:~0,1%
 if '%wantsTutorial%'=='y' goto :wantsTutorial
 if '%wantsTutorial%'=='Y' goto :wantsTutorial
 if '%wantsTutorial%'=='n' goto :noTutorial
@@ -66,7 +119,7 @@ goto :FirstTimeUser
 :noTutorial
 echo.Are you sure?
 set /p isSureofNoTutorial= 
-if not '%isSureofNoTutorial%'=='' set choice=%isSureofNoTutorial:~0,1%
+if not '%isSureofNoTutorial%'=='' set isSureofNoTutorial=%isSureofNoTutorial:~0,1%
 if '%isSureofNoTutorial%'=='y' goto :isSureofNoTutorial
 if '%isSureofNoTutorial%'=='Y' goto :isSureofNoTutorial
 if '%isSureofNoTutorial%'=='n' goto :FirstTimeUser
@@ -214,6 +267,7 @@ echo.
 echo.Do you understand this aggreement? The creator takes no responsibilty in what can happen if I, the user, breaks part of the program, by using explictly stated as options for DEBUGGING purposes.
 echo.
 set /p isSureOfDebugOptions=
+if not '%isSureOfDebugOptions%'=='' set isSureOfDebugOptions=%isSureOfDebugOptions:~0,1%
 if '%isSureOfDebugOptions%'=='y' goto :realDebug
 if '%isSureOfDebugOptions%'=='Y' goto :realDebug
 if '%isSureOfDebugOptions%'=='n' goto :noDebug
@@ -243,10 +297,11 @@ echo.Welcome to the settings menu!
 echo.Here you can modify some settings!
 echo.
 echo.1: Modify the default color when you start the script.
-echo.2: Not yet created just felt like adding this here. :P
+echo.2: Set up if you want the script to run automatically, or bind it to a command, or nothing at all.
 set /p SettingsChoice=
+if not '%SetttingsChoice%'=='' set SettingsChoice=%SettingsChoice:~0,1%
 if '%SettingsChoice%'=='1' goto :color
-if '%isSureOfDebugOptions%'=='2' goto :Nothing
+if '%SettingsChoice%'=='2' goto :FirstTimeUser
 
 :: A label used for when I wanted to add an option but it isn't implemented yet or is in a state where it can't be used.  Or if I just haven't though of anything to put in that slot yet.
 :Nothing
@@ -266,7 +321,7 @@ set /p ColorCode=
 echo.Great!  Does this look good?
 color %ColorCode%
 set /p YesNoColor=
-if not '%YesNoColor%'=='' set choice=%YesNoColor%:~0,1%
+if not '%YesNoColor%'=='' set choice=%YesNoColor:~0,1%
 if '%YesNoColor%'=='y' goto :SetColor
 if '%YesNoColor%'=='Y' goto :SetColor
 if '%YesNoColor%'=='n' goto :color
@@ -281,7 +336,7 @@ echo.Great!  Would you like to save the color code
 echo.so that it is applied every time you start the
 echo.script?
 set /p YesNoColor2=
-if not '%YesNoColo2r%'=='' set choice=%YesNoColor2%:~0,1%
+if not '%YesNoColo2r%'=='' set choice=%YesNoColor2:~0,1%
 if '%YesNoColor2%'=='y' goto :SetColor2
 if '%YesNoColor2%'=='Y' goto :SetColor2
 if '%YesNoColor2%'=='n' goto :MainMenu
@@ -293,12 +348,9 @@ goto :color
 :SetColor2
 @echo off
 echo %ColorCode% > Color.txt
-ping techflash.ga -n 2 > nul
-set /p VerifyColorCode= < Color.txt
-ping techflash.ga -n 2 > nul
-echo. The file now needs some modification, I will open Notepad and show you what you have to do.
+echo. The file now needs some modification, I will open your default text editor and show you what you have to do.
 echo. (Note that this process is temporary and only needed to fix a strange bug that occurs.)
-start %windir%\notepad.exe "%appdata%\Sanikdah Software\Ease of Use Command Prompt Auto Run Script\Color.txt"
+start "" "%appdata%\Sanikdah Software\Ease of Use Command Prompt Auto Run Script\Color.txt"
 echo. Now, click at the bottom area of the window, your text caret\cursor should be at the line below your color code.
 echo. Then press Backspace 2 times, to delete that extra line, and the extra space after the color code.
 echo. Now, save and exit the file.  And press any key to resume the program with your new color code!
