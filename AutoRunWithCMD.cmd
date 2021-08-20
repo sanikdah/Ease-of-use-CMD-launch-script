@@ -34,19 +34,16 @@ goto :MainMenu
 
 
 :: Launches if the previous code detects that this is your first time launching the program
+@echo off
 :FirstTimeUser
 title Do you want a tutorial?
-echo.Hey!  You seem like you ran this program for the first time!  Would you like a tutorial on how to navigate?
+echo.Hey!  You seem like you ran this program for the first time!  Would you like a tutorial on how to use the program?
 set /p wantsTutorial= 
 if not '%wantsTutorial%'=='' set choice=%wantsTutorial:~0,1%
 if '%wantsTutorial%'=='y' goto :wantsTutorial
 if '%wantsTutorial%'=='Y' goto :wantsTutorial
-if '%wantsTutorial%'=='Yes' goto :wantsTutorial
-if '%wantsTutorial%'=='yes' goto :wantsTutorial
 if '%wantsTutorial%'=='n' goto :noTutorial
 if '%wantsTutorial%'=='N' goto :noTutorial
-if '%wantsTutorial%'=='no' goto :noTutorial
-if '%wantsTutorial%'=='No' goto :noTutorial
 ECHO. "%wantsTutorial%" is not a valid option, please try again.
 goto :FirstTimeUser
 ECHO.
@@ -58,8 +55,6 @@ set /p wantsTutorial=
 if not '%wantsTutorial%'=='' set choice=%wantsTutorial:~0,1%
 if '%wantsTutorial%'=='y' goto :wantsTutorial
 if '%wantsTutorial%'=='Y' goto :wantsTutorial
-if '%wantsTutorial%'=='Yes' goto :wantsTutorial
-if '%wantsTutorial%'=='yes' goto :wantsTutorial
 if '%wantsTutorial%'=='n' goto :noTutorial
 if '%wantsTutorial%'=='N' goto :noTutorial
 if '%wantsTutorial%'=='no' goto :noTutorial
@@ -74,19 +69,15 @@ set /p isSureofNoTutorial=
 if not '%isSureofNoTutorial%'=='' set choice=%isSureofNoTutorial:~0,1%
 if '%isSureofNoTutorial%'=='y' goto :isSureofNoTutorial
 if '%isSureofNoTutorial%'=='Y' goto :isSureofNoTutorial
-if '%isSureofNoTutorial%'=='Yes' goto :isSureofNoTutorial
-if '%isSureofNoTutorial%'=='yes' goto :isSureofNoTutorial
 if '%isSureofNoTutorial%'=='n' goto :FirstTimeUser
 if '%isSureofNoTutorial%'=='N' goto :FirstTimeUser
-if '%isSureofNoTutorial%'=='no' goto :FirstTimeUser
-if '%isSureofNoTutorial%'=='No' goto :FirstTimeUser
 ECHO. "%isSureofNoTutorial%" is not a valid option, please try again.
 goto :noTutorial
 ECHO.
 
 :isSureofNoTutorial
 cls
-echo Alright, just go to Help (5) and then Tutorial (2) to view it if you ever want to!
+echo Alright, just go to Help (5) and then Tutorial (1) to view it if you ever want to!
 goto :MainMenu
 
 
@@ -113,7 +104,8 @@ echo.  4: Get your public IP!
 echo.  5: Check network statistics!
 echo.  8: Settings
 echo.  9: Access Help
-set /p choice= Your choice?=
+echo.Which do you want?
+set /p choice=
 if not '%choice%'=='' set choice=%choice:~0,1%
 if '%choice%'=='1' goto :GoToRegularCMD
 if '%choice%'=='2' goto :PingGoogle
@@ -128,6 +120,18 @@ ECHO.
 goto :Choice
 echo.>EndOfChoiceTriggered.txt
 
+:Help
+echo.
+title What do you need help with?
+echo. Hello!  Select an option to get help for that topic.
+echo.
+echo.   1: Tutorial (unfinished)
+echo.   2: Nothing yet
+echo.Which do you want?
+set /p HelpChoice=
+if not '%HelpChoice%'=='' set HelpChoice=%HelpChoice:~0,1%
+if '%HelpChoice%'=='1' goto :wantsTutorial
+if '%HelpChoice%'=='1' goto :Nothing
 
 :CurlIPme
 @echo off
@@ -183,12 +187,13 @@ goto :noDebug
 
 
 :noDebug
-echo No debug 4 u
-:: Causes about a 0.25 second pause
-ping techflash.ga -n 1 > nul
-goto :noDebug
+@echo off
+cls
+echo No debug if you don't accept the aggreement.
+goto :MainMenu
 
 :realDebug
+@echo off
 echo.
 echo Nothing here yet, currently working on the main menu.
 echo.Press any key to go back to the Main menu.
@@ -199,7 +204,8 @@ goto :MainMenu
 :Settings
 @echo off
 cls
-echo.Welcome to the settings menu!  Here you can modify some settings!
+echo.Welcome to the settings menu!
+echo.Here you can modify some settings!
 echo.
 echo.1: Modify the default color when you start the script.
 echo.2: Not yet created just felt like adding this here. :P
@@ -207,7 +213,7 @@ set /p SettingsChoice=
 if '%SettingsChoice%'=='1' goto :color
 if '%isSureOfDebugOptions%'=='2' goto :Nothing
 
-:: A label used for when I wanted to add an option but it isn't implemented yet or is in a state where it can't be used.
+:: A label used for when I wanted to add an option but it isn't implemented yet or is in a state where it can't be used.  Or if I just haven't though of anything to put in that slot yet.
 :Nothing
 @echo off
 echo Nothing here yet!  There might be soon O_O
@@ -219,7 +225,7 @@ goto :Settings
 :color
 @echo off
 cls
-echo.Welcome to the color selection menu! (BROKEN)
+echo.Welcome to the color selection menu! (kinda janky but it works)
 echo.Please enter a Command Prompt-format color code.
 set /p ColorCode=
 echo.Great!  Does this look good?
