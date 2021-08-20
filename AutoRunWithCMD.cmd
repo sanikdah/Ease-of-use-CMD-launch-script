@@ -77,7 +77,7 @@ ECHO.
 
 :isSureofNoTutorial
 cls
-echo Alright, just go to Help (5) and then Tutorial (1) to view it if you ever want to!
+echo Alright, just go to Help (5) and then Tutorial (2) to view it if you ever want to!
 goto :MainMenu
 
 
@@ -90,6 +90,10 @@ echo This is a placeholder menu until I design a real one!
 goto :Choice
 echo.>MainMenuTriggered.txt
 
+:ClearAndMenu
+@echo off
+cls
+goto :MainMenu
 
 :: Some code to make choices
 :: NOTE TO FUTURE SELF:
@@ -121,17 +125,48 @@ goto :Choice
 echo.>EndOfChoiceTriggered.txt
 
 :Help
+@echo off
+cls
 echo.
 title What do you need help with?
-echo. Hello!  Select an option to get help for that topic.
+echo.Hello!  Select an option to get help for that topic.
 echo.
-echo.   1: Tutorial (unfinished)
-echo.   2: Nothing yet
+echo.  1: Back
+echo.  2: Tutorial (unfinished)
+echo.  3: Links
+echo.
 echo.Which do you want?
 set /p HelpChoice=
 if not '%HelpChoice%'=='' set HelpChoice=%HelpChoice:~0,1%
-if '%HelpChoice%'=='1' goto :wantsTutorial
-if '%HelpChoice%'=='1' goto :Nothing
+if '%HelpChoice%'=='1' goto :ClearAndMenu
+if '%HelpChoice%'=='2' goto :wantsTutorial
+if '%HelpChoice%'=='3' goto :Links
+
+:Links
+@echo off
+cls
+echo.
+title Liiiiinkks....
+echo.  1: Back
+echo.  2: GitHub repository for this project
+echo.  3: Developer's website (not garrunteed to be up)
+echo.  4: Developer's YouTube Channel (subscribe! :D)
+echo.  5: Developer's GitHub user
+echo.  6: Developer's Discord Server
+echo.  7: Developer's Twitch Channel
+echo.Which do you want?
+set /p LinkChoice=
+if not '%LinkChoice%'=='' set LinkChoice=%LinkChoice:~0,1%
+if '%LinkChoice%'=='1' goto :Help
+if '%LinkChoice%'=='2' start "" https://github.com/sanikdah/Ease-of-use-CMD-launch-script/tree/main/
+if '%LinkChoice%'=='3' start "" https://www.techflash.ga/
+if '%LinkChoice%'=='4' start "" https://youtube.com/channel/UCZNRlvLcjqN8nw6YO73IPOg/
+if '%LinkChoice%'=='5' start "" https://github.com/sanikdah/
+if '%LinkChoice%'=='6' start "" https://discord.com/invite/FnseMDFBH6
+if '%LinkChoice%'=='7' start "" https://twitch.tv/sanikdahh
+echo "%LinkChoice%" is not a valid option, please try again.
+echo.
+goto :Links
 
 :CurlIPme
 @echo off
