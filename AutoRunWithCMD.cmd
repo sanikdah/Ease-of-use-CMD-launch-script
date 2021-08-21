@@ -3,6 +3,7 @@
 @echo off
 cls
 cd %appdata%
+set blank=''
 :: Debug stuff, making a place for logs
 if exist "Sanikdah Software" (
 	cd "Sanikdah Software".
@@ -262,6 +263,32 @@ echo.Press any key when you are done.
 pause
 goto :ClearAndMenu
 
+:DISMandSFC
+@echo off
+echo.This will ask you to run System File Checker
+echo.as an administrator.
+echo.
+echo.When you are ready, press any key.
+pause
+powershell "start sfc /scannow -v runAs"
+echo.When that is finished, press any key.
+pause
+echo.
+echo.Currently unable to run DISM, you will have to do it manually.
+echo.Open a command prompt as admin and paste
+echo."DISM /Online /Cleanup-Image /RestoreHealth"
+::echo.
+::echo.This will ask you to run DISM as an administrator.
+::echo.
+::echo.When you are ready, press any key.
+::pause
+::powershell "start DISM /Online /Cleanup-Image /RestoreHealth -v runAs"
+echo.To ensure that everything is fixed, I recommend that you run this up until
+echo.SFC says that did not find any bad files (or until 5 times if it doesn't stop finding them).
+echo.However this is completely optional.
+pause
+goto :MainMenu
+
 :Help
 @echo off
 cls
@@ -312,17 +339,18 @@ goto :Links
 
 :CurlIPme
 @echo off
-title Please Wait....
+title Please wait....
 echo Getting your IP....
 curl ip.me > TempIP.txt
 set /p IP= < TempIP.txt
 del TempIP.txt
-echo Your public IP is %IP%
-set %IP%=
+echo Your public IP is %IP%!
+set %IP%='%blank%'
 goto :MainMenu
 
 :CheckNetworkStatistics
 @echo off
+title Checking network statistics...
 start %windir%\system32\netstat
 echo.Press any key to go back to the menu.
 pause
@@ -393,7 +421,6 @@ cls
 echo."%debugChoice%" is not a valid option, please try again.
 goto :realDebug
 
-goto :realDebug
 
 :: Settings menu
 :Settings
@@ -402,12 +429,14 @@ cls
 echo.Welcome to the settings menu!
 echo.Here you can modify some settings!
 echo.
-echo.1: Modify the default color when you start the script.
-echo.2: Launch options (load when you start CMD, start when you run a command, or nothing.)
+echo.1: Go back to the main menu.
+echo.2: Modify the default color when you start the script.
+echo.3: Launch options (load when you start CMD, start when you run a command, or nothing.)
 set /p SettingsChoice=
 if not '%SetttingsChoice%'=='' set SettingsChoice=%SettingsChoice:~0,1%
-if '%SettingsChoice%'=='1' goto :color
-if '%SettingsChoice%'=='2' goto :FirstTimeUser1.5
+if '%SettingsChoice%'=='1' goto :MainMenu
+if '%SettingsChoice%'=='2' goto :color
+if '%SettingsChoice%'=='3' goto :FirstTimeUser1.5
 
 :: A label used for when I wanted to add an option but it isn't implemented yet or is in a state where it can't be used.  Or if I just haven't though of anything to put in that slot yet.
 :Nothing
@@ -442,13 +471,13 @@ echo.Great!  Would you like to save the color code
 echo.so that it is applied every time you start the
 echo.script?
 set /p YesNoColor2=
-if not '%YesNoColo2r%'=='' set choice=%YesNoColor2:~0,1%
+if not '%YesNoColor2%'=='' set choice=%YesNoColor2:~0,1%
 if '%YesNoColor2%'=='y' goto :SetColor2
 if '%YesNoColor2%'=='Y' goto :SetColor2
 if '%YesNoColor2%'=='n' goto :MainMenu
 if '%YesNoColor2%'=='N' goto :MainMenu
-ECHO. "%YesNoColor%" is not a valid option, please try again.
-goto :color
+ECHO. "%YesNoColor2%" is not a valid option, please try again.
+goto :SetColor
 
 :: Some code to for real this time set the color code.
 :SetColor2
@@ -462,7 +491,6 @@ echo. Then press Backspace 2 times, to delete that extra line, and the extra spa
 echo. Now, save and exit the file.  And press any key to resume the program with your new color code!
 pause
 goto :Init
-
 
 
 :: Simplest one of them all, exits the shell
