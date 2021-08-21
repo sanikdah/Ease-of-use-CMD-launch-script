@@ -2,11 +2,6 @@
 :Init
 @echo off
 cls
-if copy AutoRunWithCMD.cmd %temp%\AutoRunWithCMD.cmd (
-	rem Do nothing :)
-) else (
-	echo.Something wen't wrong, please give the error code "4".
-)
 cd %appdata%
 :: Debug stuff, making a place for logs
 if exist "Sanikdah Software" (
@@ -29,12 +24,12 @@ if exist "Ease of Use Command Prompt Auto Run Script" (
 )
 :EoUCPARS-FolderExists
 @echo off
-if move %temp%\AutoRunWithCMD.cmd "%appdata%\Sanikdah Software\Ease of Use Command Prompt Auto Run Script\AutoRunWithCMD.cmd" 2> nul (
-	rem Do nothing :)
+if exist AutoRunWithCMD.cmd (
+	copy AutoRunWithCMD.cmd %temp%\AutoRunWithCMD.cmd > nul
 ) else (
-	echo. Something went wrong, please give the developer error code "3".
+	echo.Can't find the this script!!  
 )
-
+move %temp%\AutoRunWithCMD.cmd "%appdata%\Sanikdah Software\Ease of Use Command Prompt Auto Run Script\AutoRunWithCMD.cmd" > nul
 echo.>Launched.txt
 goto :ReadBackColor
 
@@ -49,8 +44,15 @@ goto :MainMenu
 :: Launches if the previous code detects that this is your first time launching the program
 :FirstTimeUser
 @echo off
+if exist AutoRunWithCMD.cmd (
+	copy AutoRunWithCMD.cmd %temp%\AutoRunWithCMD.cmd > nul
+) else (
+	echo.Can't find the this script!!  
+)
 move %temp%\AutoRunWithCMD.cmd "%appdata%\Sanikdah Software\Ease of Use Command Prompt Auto Run Script\AutoRunWithCMD.cmd" > nul
 cls
+
+:FirstTimeUser1.5
 echo.Hey!  Would you like this program to run whenever you launch the command prompt?
 echo.(Please note that this is dangerous and will break any other batch script.)
 echo.You can ALSO try a safer method, where calling a command in CMD will launch the script.
@@ -66,7 +68,7 @@ if '%doesAutoRun%'=='n' goto :FirstTimeUser2
 if '%doesAutoRun%'=='N' goto :FirstTimeUser2
 if '%doesAutoRun%'=='S' goto :saferSetAutoRun
 if '%doesAutoRun%'=='s' goto :saferSetAutoRun
-echo "%doesAutoRun%" is not a valid option, please try again.
+echo."%doesAutoRun%" is not valid, please try again.
 goto :FirstTimeUser
 
 :: Sets the autoRun value
@@ -78,13 +80,47 @@ if '%isSureOfDangerousAutoRun%'=='Y' goto :setAutoRun2
 if '%isSureOfDangerousAutoRun%'=='y' goto :setAutoRun2
 if '%isSureOfDangerousAutoRun%'=='n' goto :FirstTimeUser
 if '%isSureOfDangerousAutoRun%'=='N' goto :FirstTimeUser
-echo "%isSureOfDangerousAutoRun%" is not a valid option, please try again.
+echo."%isSureOfDangerousAutoRun%" is not valid, please try again.
+goto :setAutoRun
+
 :setAutoRun2
 echo.This will NOT work if you have renamed the file.
-reg add "HKCU\Software\Microsoft\Command Processor" /v AutoRun ^
-  /t REG_EXPAND_SZ /d "%appdata%\Sanikdah Software\AutoRunWithCMD.cmd" /f
-pause
+:goto :setAutoRun2
 
+:saferSetAutoRun
+@echo off
+echo.This will append the directory of the file to your system PATH, so you can run it with a command.
+echo.==WARNING======WARNING=====WARNING===
+echo.==WARNING======WARNING=====WARNING===
+echo.==WARNING======WARNING=====WARNING===
+echo.While I am pretty sure that this is safe, it still messes with your system PATH.
+echo.Using IN-DEVELOPMENT CODE.
+echo.By aggreeing to add this to your system path, you are aggreeing that your system might not boot afterwards.
+echo.Or it might have other side effects, I know for a fact that I made a restore point before doing this.
+echo.
+echo.S/s: Open the GUI to make a system restore point before attempting this.
+echo.C/c: Continue without making a restore point (or if you have already made one).
+echo.1: Go back.
+set /p choiceForDangerousAutoRun=
+if not '%choiceForDangerousAutoRun%'=='' set choiceForDangerousAutoRun=%choiceForDangerousAutoRun:~0,1%
+if '%choiceForDangerousAutoRun%'=='s' goto :MakeSystemRestorePoint
+if '%choiceForDangerousAutoRun%'=='S' goto :MakeSystemRestorePoint
+if '%choiceForDangerousAutoRun%'=='C' goto :saferSetAutoRun2
+if '%choiceForDangerousAutoRun%'=='c' goto :saferSetAutoRun2
+if '%choiceForDangerousAutoRun%'=='1' goto :FirstTimeUser
+echo."%choiceForDangerousAutoRun%" is not valid, please try again.
+goto :saferSetAutoRun
+
+:saferSetAutoRun2
+@echo off
+cls
+set AppendToPath='%appdata%\Sanikdah Software\Ease of Use Command Prompt Auto Run Script'
+ping techflash.ga -n 2 > nul
+:: Wastes time so that the variable 100% has enough time to update
+echo.Setting everything...
+set "PATH=%AppendToPath%;%PATH%"
+echo.Done!  Restart your computer for it to work!
+goto :MainMenu
 
 
 @echo off
@@ -177,6 +213,22 @@ ECHO.
 goto :Choice
 echo.>EndOfChoiceTriggered.txt
 
+:: Some code to launch the restore point UI
+:MakeSystemRestorePoint
+@echo off
+echo.Starting the GUI...
+start "" sysdm.cpl
+echo.Done!
+echo.A few steps now.
+echo.1. Click on "System Protection".
+echo.1.5 If System Protection is disabled, enable it.
+echo.2. Click on "Create".
+echo.3. Go through the steps of creating the restore point.
+echo.Press any key when you are done.
+pause
+cls
+goto :MainMenu
+
 :Help
 @echo off
 cls
@@ -233,6 +285,11 @@ set %IP%=
 goto :MainMenu
 
 :CheckNetworkStatistics
+@echo off
+start %windir%\system32\netstat
+echo.Press any key to go back to the menu.
+pause
+goto :MainMenu
 
 
 :GoToRegularCMD
@@ -297,19 +354,19 @@ echo.Welcome to the settings menu!
 echo.Here you can modify some settings!
 echo.
 echo.1: Modify the default color when you start the script.
-echo.2: Set up if you want the script to run automatically, or bind it to a command, or nothing at all.
+echo.2: Launch options (load when you start CMD, start when you run a command, or nothing.)
 set /p SettingsChoice=
 if not '%SetttingsChoice%'=='' set SettingsChoice=%SettingsChoice:~0,1%
 if '%SettingsChoice%'=='1' goto :color
-if '%SettingsChoice%'=='2' goto :FirstTimeUser
+if '%SettingsChoice%'=='2' goto :FirstTimeUser1.5
 
 :: A label used for when I wanted to add an option but it isn't implemented yet or is in a state where it can't be used.  Or if I just haven't though of anything to put in that slot yet.
 :Nothing
 @echo off
 echo Nothing here yet!  There might be soon O_O
-echo. Going back to settings in 5 seconds.
+echo. Going back to the main menu in 5 seconds.
 timeout 5
-goto :Settings
+goto :MainMenu
 
 :: A basic section of code for setting the default color of the shell.
 :color
