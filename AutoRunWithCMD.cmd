@@ -108,23 +108,52 @@ if '%choiceForDangerousAutoRun%'=='S' goto :MakeSystemRestorePoint
 if '%choiceForDangerousAutoRun%'=='C' goto :saferSetAutoRun2
 if '%choiceForDangerousAutoRun%'=='c' goto :saferSetAutoRun2
 if '%choiceForDangerousAutoRun%'=='1' goto :FirstTimeUser
-echo."%choiceForDangerousAutoRun%" is not valid, please try again.
+cls
+echo."%choiceForDangerousAutoRun%" is not a valid option, please try again.
+echo.
 goto :saferSetAutoRun
 
 :saferSetAutoRun2
 @echo off
 cls
 set AppendToPath='%appdata%\Sanikdah Software\Ease of Use Command Prompt Auto Run Script'
-ping techflash.ga -n 2 > nul
-:: Wastes time so that the variable 100% has enough time to update
+echo.Wasting time so that we are 100% certain that the variable has updated before continuing,  please wait.....
+ping techflash.ga -n 6 > nul
+:: Wastes time so that the variable 100% has enough time to update to prevent breaking of computers.
 echo.Setting everything...
 set "PATH=%AppendToPath%;%PATH%"
-echo.Done!  Restart your computer for it to work!
-goto :MainMenu
+echo.Done!  Please save any work and restart your computer for it to work!
+echo.Would you like to have the script restart your PC for you?
+set /p doesRestart=
+if not '%doesRestart%'=='' set doesRestart=%doesRestart:~0,1%
+if '%doesRestart%'=='y' (
+	shutdown /t 20 /r
+	echo.Restarting in 20 seconds!
+)
+if '%doesRestart%'=='Y' (
+	shutdown /t 20 /r
+	echo.Restarting in 20 seconds!
+)
+if '%doesRestart%'=='n' (
+	echo.Going back to the menu!
+	timeout 5
+	cls
+	goto :MainMenu
+)
+if '%doesRestart%'=='N' (
+	echo.Going back to the menu!
+	timeout 5
+	cls
+	goto :MainMenu
+)
+cls
+echo."%doesRestart%" is not a valid option, please try again.
+echo.
+goto :saferSetAutoRun2
 
 
-@echo off
 :FirstTimeUser2
+@echo off
 title Do you want a tutorial?
 echo.Hey!  You seem like you ran this program for the first time!  Would you like a tutorial on how to use the program?
 set /p wantsTutorial= 
@@ -148,7 +177,9 @@ if '%wantsTutorial%'=='n' goto :noTutorial
 if '%wantsTutorial%'=='N' goto :noTutorial
 if '%wantsTutorial%'=='no' goto :noTutorial
 if '%wantsTutorial%'=='No' goto :noTutorial
-ECHO. "%wantsTutorial%" is not a valid option, please try again.
+cls
+echo."%wantsTutorial%" is not a valid option, please try again.
+echo.
 goto :FirstTimeUser
 
 
@@ -160,9 +191,11 @@ if '%isSureofNoTutorial%'=='y' goto :isSureofNoTutorial
 if '%isSureofNoTutorial%'=='Y' goto :isSureofNoTutorial
 if '%isSureofNoTutorial%'=='n' goto :FirstTimeUser
 if '%isSureofNoTutorial%'=='N' goto :FirstTimeUser
-ECHO. "%isSureofNoTutorial%" is not a valid option, please try again.
+cls
+echo."%isSureofNoTutorial%" is not a valid option, please try again.
+echo.
 goto :noTutorial
-ECHO.
+
 
 :isSureofNoTutorial
 cls
@@ -208,8 +241,9 @@ if '%choice%'=='5= goto :CheckNetworkStatistics
 if '%choice%'=='0' goto :debug
 if '%choice%'=='8' goto :Settings
 if '%choice%'=='9' goto :Help
-ECHO "%choice%" is not a valid option, please try again.
-ECHO.
+cls
+echo."%choice%" is not a valid option, please try again.
+echo.
 goto :Choice
 echo.>EndOfChoiceTriggered.txt
 
@@ -226,8 +260,7 @@ echo.2. Click on "Create".
 echo.3. Go through the steps of creating the restore point.
 echo.Press any key when you are done.
 pause
-cls
-goto :MainMenu
+goto :ClearAndMenu
 
 :Help
 @echo off
@@ -246,6 +279,9 @@ if not '%HelpChoice%'=='' set HelpChoice=%HelpChoice:~0,1%
 if '%HelpChoice%'=='1' goto :ClearAndMenu
 if '%HelpChoice%'=='2' goto :wantsTutorial
 if '%HelpChoice%'=='3' goto :Links
+cls
+echo."%HelpChoice%" is not a valid option, please try again.
+goto :Help
 
 :Links
 @echo off
@@ -269,6 +305,7 @@ if '%LinkChoice%'=='4' start "" https://youtube.com/channel/UCZNRlvLcjqN8nw6YO73
 if '%LinkChoice%'=='5' start "" https://github.com/sanikdah/
 if '%LinkChoice%'=='6' start "" https://discord.com/invite/FnseMDFBH6
 if '%LinkChoice%'=='7' start "" https://twitch.tv/sanikdahh
+cls
 echo "%LinkChoice%" is not a valid option, please try again.
 echo.
 goto :Links
@@ -329,6 +366,8 @@ if '%isSureOfDebugOptions%'=='y' goto :realDebug
 if '%isSureOfDebugOptions%'=='Y' goto :realDebug
 if '%isSureOfDebugOptions%'=='n' goto :noDebug
 if '%isSureOfDebugOptions%'=='N' goto :noDebug
+cls
+echo."%isSureOfDebugOptions%" is not a valid option, please try again.
 goto :noDebug
 
 
@@ -340,11 +379,21 @@ goto :MainMenu
 
 :realDebug
 @echo off
-echo.
-echo Nothing here yet, currently working on the main menu.
-echo.Press any key to go back to the Main menu.
-pause
-goto :MainMenu
+echo.Severly untested options.
+echo.   1. Go back to the main menu.
+echo.	2. Jump directly to any batch label in the script. (Some maybe be intentionally hidden due to being unfinished!)
+echo.   3. The super dangerous stuff (potentially script or **ENTIRE PC BREAKING**)
+echo.Which do you want to do?
+set /p debugChoice=
+if not '%debugChoice%'=='' set debugChoice=%debugChoice:~0,1%
+if '%debugChoice%'=='1' goto :MainMenu
+if '%debugChoice%'=='2' goto :gotoAnyBatchLabel
+if '%debugChoice%'=='3' goto :DangerousDebug
+cls
+echo."%debugChoice%" is not a valid option, please try again.
+goto :realDebug
+
+goto :realDebug
 
 :: Settings menu
 :Settings
