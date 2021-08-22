@@ -10,3 +10,21 @@ a placeholder tutorial.
 
 This project is still in beta and many things (especially the debug menu)  
 are dangerous to either the script, your PC, or both.
+
+# Setup
+
+## Installing
+
+### 1. Downloading
+
+You will typically want to download the version from the releases section,  
+as these are garunteed to at least work. However you can also get it directly  
+from the source, for the essentially "beta" version. These might have more  
+features that aren't in the latest release, typically because they are unfinished.
+
+### 2. Installation
+
+Now that you have the script downloaded, launch the script, and go through the  
+[first time setup](#First-Time-Setup).
+
+### First Time Setup
