@@ -38,7 +38,7 @@ You should now set it up for better ease of use.
 
 For launching the script easier, I included 2 (DANGEROUS!) methods that you can use.  
 NOTE: You use these methods at your own risk, as they involve basic modification of the system.  
-I have tested both, and I can confirm that they do not break anything (major).
+I have tested both, and I can confirm that they do not break anything (major).  
 The safer option is likely the best one to go with, as it involves launching the script  
 via a command, rather than launching automatically whenever you load a Command Prompt window.  
 That more dangerous option will break any other batch scripts that run.
