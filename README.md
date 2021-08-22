@@ -53,5 +53,17 @@ Auto-Run (3) to enter the auto-run settings menu.
 
 Now that you are in that menu, I highly recommend that you choose the safer option,  
 as this involves adding it to the system PATH, which is 10x safer than the more dangerous option.  
-Anyways, to use the safer option, press <kbd>S</kbd>, to use the more dangerous option (and please don't),  
+Anyways, to use the [safer](#5-The-much-safer-way) option, press <kbd>S</kbd>, to use the more [dangerous](#6-The-more-dangerous-way) option (and please don't),  
 press <kbd>D</kbd>.
+
+### 5. The much safer way
+
+I highly recommend creating a system restore point at this time, so that just in case something  
+happens to go wrong while doing this (it really shouldn't but just to be safe), for convinience,  
+an option to open the system restore GUI is built in to this menu, I HIGHLY recommend using it,  
+and following the instructions to create a restore point before attempting this. You can open  
+the GUI by pressing <kbd>S</kbd>.
+
+### 5. The much safer way **2**
+
+Now that you (hopefully) have a system restore point, you can continue setting it up,
