@@ -74,6 +74,8 @@ goto :FirstTimeUser
 
 :: Sets the autoRun value
 :setAutoRun
+@echo off
+cls
 echo. Are you CERTAIN that you want to do this?  It is difficult to undo!
 set /p isSureOfDangerousAutoRun=
 if not '%isSureOfDangerousAutoRun%'=='' set isSureOfDangerousAutoRun=%isSureOfDangerousAutoRun:~0,1%
@@ -85,11 +87,14 @@ echo."%isSureOfDangerousAutoRun%" is not valid, please try again.
 goto :setAutoRun
 
 :setAutoRun2
-echo.This will NOT work if you have renamed the file.
-:goto :setAutoRun2
+@echo off
+echo.This will NOT work if you have renamed the file.  Will work on fixing that by 0.1!
+reg add "HKCU\Software\Microsoft\Command Processor" /v AutoRun /t REG_EXPAND_SZ /d "%appdata%/Sanikdah Software/AutoRunWithCMD.cmd" /f > nul
+goto :setAutoRun2
 
 :saferSetAutoRun
 @echo off
+cls
 echo.This will append the directory of the file to your system PATH, so you can run it with a command.
 echo.==WARNING======WARNING=====WARNING===
 echo.==WARNING======WARNING=====WARNING===
@@ -436,7 +441,10 @@ set /p SettingsChoice=
 if not '%SetttingsChoice%'=='' set SettingsChoice=%SettingsChoice:~0,1%
 if '%SettingsChoice%'=='1' goto :MainMenu
 if '%SettingsChoice%'=='2' goto :color
-if '%SettingsChoice%'=='3' goto :FirstTimeUser1.5
+if '%SettingsChoice%'=='3' (
+	cls
+	goto :FirstTimeUser1.5
+)
 
 :: A label used for when I wanted to add an option but it isn't implemented yet or is in a state where it can't be used.  Or if I just haven't though of anything to put in that slot yet.
 :Nothing
