@@ -81,3 +81,10 @@ Should you ever want to have the script run automatically with Command Prompt,
 and please don't, here's how you can do that! Make sure that you did [Installing](#installing) [1](#1-downloading)-[2](#2-installation),  
 and [Customization](#customization) [1](#1-ease-of-use-part-1)-[4](#4-ease-of-use-part-3-actually-setting-it-up-2). Then rather than pressing <kbd>S</kbd> when it asks you which method to use,  
 press <kbd>D</kbd>.
+
+# Parts of the program
+
+## First time setup
+
+This is what happens when you open the program and the data folder for the program doesn't exist.  
+Here you can set up the auto run settings, and view a tutorial, that's all that it is for now.
