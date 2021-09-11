@@ -3,7 +3,7 @@
 @echo off
 cls
 cd %appdata%
-set blank=''
+set blank=
 :: Debug stuff, making a place for logs
 if exist "Sanikdah Software" (
 	cd "Sanikdah Software".
@@ -30,8 +30,18 @@ if exist AutoRunWithCMD.cmd (
 ) else (
 	echo.Can't find the this script!!  
 )
+
+if exist Log.txt.old (
+	del /f Log.txt.old
+)
+:: Rename the log to Log.txt.old
+if exist Log.txt (
+	ren Log.txt Log.txt.old
+)
 move %temp%\AutoRunWithCMD.cmd "%appdata%\Sanikdah Software\Ease of Use Command Prompt Auto Run Script\AutoRunWithCMD.cmd" > nul
-echo.>Launched.txt
+for /F "tokens=2" %%i in ('date /t') do set mydate=%%i
+set mytime=%time%
+echo %mydate%:%mytime%		Started the program > Log.txt
 goto :ReadBackColor
 
 :ReadBackColor
@@ -319,7 +329,7 @@ goto :Help
 @echo off
 cls
 echo.
-title Liiiiinkks....
+title Links
 echo.  1: Back
 echo.  2: GitHub repository for this project
 echo.  3: Developer's website (not garrunteed to be up)
@@ -346,11 +356,12 @@ goto :Links
 @echo off
 title Please wait....
 echo Getting your IP....
-curl ip.me > TempIP.txt
+curl ip.me -s > TempIP.txt
 set /p IP= < TempIP.txt
-del TempIP.txt
+cls
 echo Your public IP is %IP%!
 set %IP%='%blank%'
+del TempIP.txt
 goto :MainMenu
 
 :CheckNetworkStatistics
@@ -366,18 +377,23 @@ goto :MainMenu
 @echo off
 title Command Prompt
 goto :leave
-echo.>EndOfGoToRegualarCMDTriggered.txt
+for /F "tokens=2" %%i in ('date /t') do set mydate=%%i
+set mytime=%time%
+echo.%mydate%:%mytime%		ERROR  End of GoToRegularCMD triggered!!! > Log.txt
 
 :PingGoogle
 @echo off
 title Pinging Google......
-ping google.com -n 1 >PingStats.txt
+ping google.com -n 1 > PingStats.txt
 if %errorlevel%==0 (set InternetState=up) else (set InternetState=down)
 cls
 echo.
 echo.Internet is %InternetState%!
+del /f PingStats.txt
 goto :MainMenu
-echo.>EndOfPingGoogleTriggered.txt
+for /F "tokens=2" %%i in ('date /t') do set mydate=%%i
+set mytime=%time%
+echo.%mydate%:%mytime%		ERROR  End of PingGoogle triggered!!! > Log.txt
 
 
 ::Debug options, to be accessible by those who know exactly what they are doing
@@ -504,9 +520,42 @@ goto :Init
 :: Simplest one of them all, exits the shell
 :exit
 exit
-echo.>EndOfExitTriggeredIMPOSSIBLE.txt
+echo
 
 
 :: End of the file, used to end the script (like to go to the normal shell)
 :leave
+@echo off
+echo.THIS IS BROKEN, YOU **LIKELY** DO NOT HAVE ERRORS, AND THIS ONLY SENDS THE FIRST LINE OF THE LOG!!!!
+findstr /c:"ERROR" log.txt > isHaveErrors.txt
+set /p isHaveError= < isHaveErrors.txt
+::del /f isHaveErrors.txt
+if not "%isHaveError%"=="" (
+	copy Log.txt Log.send > nul
+	echo.Errors were found in your log file, do you want
+	echo.to send the log file to the developer to diagnose the issue?
+	set /p sendLogChoice=
+	if not '%sendLogChoice%'=='' set sendLogChoice=%sendLogChoice:~0,1%
+	if '%sendLogChoice%'=='y' goto :SubmitLogFile
+	if '%sendLogChoice%'=='Y' goto :SubmitLogFile
+	if '%sendLogChoice%'=='n' goto :realLeave
+	if '%sendLogChoice%'=='N' goto :realLeave
+	ECHO. "%sendLogChoice%" is not a valid option, please try again.
+	goto :leave
+)
+else (
+	goto :realLeave
+)
+:SubmitLogFile
+@echo off
+set /p Log= < Log.send
+echo.%Log%
+echo.Email that I can reach you at if required? OPTIONAL
+set /p emailForLog=
+echo.Sending the log...
+curl -X POST -d program=AutoRunCMD -d email=%emailForLog% -d "logData=%Log%" https://techflash.ga/saveLogsFromPrograms 
+echo.Done!  Please wait for the developer to review your log, and reach out to you via email if necessary.
+echo.No clue if it actually sent though, if I don't respond within 48 hours, please reach out and ask if I recieved it or not.
+echo.If you need to reach me, ask on my Discord server, or email me.
+:realLeave
 @echo on
